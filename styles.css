@@ -1,0 +1,163 @@
+* {
+	box-sizing: border-box;
+}
+
+html {
+	font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+body {
+	background-color: #FAFAFA;
+	color: #000000;
+	margin: 16px;
+}
+
+button {
+	font-family: inherit;
+	padding: 2px 4px;
+}
+
+h1 {
+	font-size: 140%;
+	margin-bottom: 16px;
+	margin-top: 0px;
+}
+h2 {
+	font-size: 120%;
+	margin-bottom: 8px;
+	margin-top: 0px;
+}
+h3 {
+	font-size: 100%;
+	font-weight: normal;
+	margin-bottom: 2px;
+	margin-top: 0px;
+}
+
+input {
+	font-family: inherit;
+	padding: 2px 4px;
+}
+
+section {
+	margin-bottom: 24px;
+}
+
+select {
+	font-family: inherit;
+	padding: 2px 4px;
+}
+
+table {
+	border-collapse: collapse;
+	margin-bottom: 16px;
+}
+	table.full {
+		width: 100%;
+	}
+
+td, th {
+	border: 1px solid #E0E0E0;
+	padding: 4px 8px;
+}
+	td.number, th.number {
+		text-align: right;
+	}
+
+td {
+	background-color: #FFFFFF;
+}
+th {
+	background-color: #F0F0F0;
+	color: #A0A0A0;
+	font-weight: normal;
+	text-align: left;
+	user-select: none;
+}
+
+.lowlight {
+	color: #A0A0A0;
+}
+
+.nobr {
+	white-space: nowrap;
+}
+
+.panel {
+	display: inline-block;
+	padding: 16px;
+	vertical-align: top;
+}
+	.panel.memory {
+		max-width: 400px;
+		width: 100%;
+	}
+
+.bar {
+	border: 1px solid #80D2FF;
+	height: 40px;
+	margin-bottom: 8px;
+	position: relative;
+}
+	.bar.mini {
+		height: 24px;
+	}
+
+		.bar.mini .size {
+			top: 0px;
+		}
+
+.bar .current,
+.bar .maximum {
+	display: inline-block;
+	height: 100%;
+}
+.bar .current {
+	background-color: #B3E5FF;
+}
+.bar .maximum {
+	background-color: #E5F6FF;
+}
+
+.bar .size {
+	position: absolute;
+	right: 4px;
+	top: 8px;
+}
+
+.action {
+	margin-top: 16px;
+	text-align: right;
+}
+
+	.action select {
+		width: 96px;
+	}
+	.action label {
+		margin-right: 16px;
+	}
+	.action input[type="text"] {
+		width: 128px;
+	}
+	.action button {
+		min-width: 120px;
+	}
+
+@media all and (max-width: 500px) {
+
+	body {
+		margin: 8px;
+	}
+
+	.panel {
+		padding: 8px;
+	}
+
+	.action label {
+		margin-right: 0px;
+	}
+	.action button {
+		margin-top: 16px;
+	}
+
+}
