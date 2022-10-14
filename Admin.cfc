@@ -1,4 +1,4 @@
-<cfcomponent output="false">
+﻿<cfcomponent output="false">
 
 	<!--- BEGIN: public methods --->
 
@@ -23,9 +23,12 @@
 								<cfcontinue>
 							</cfif>
 
+							<cfset LOCAL.sessionScopes = LOCAL.scopeContext.getAllSessionScopes(LOCAL.appName)>
+
 							<cfset LOCAL.result[LOCAL.appName] = {
 								ApplicationName: LOCAL.appName,
-								SessionCount:    structCount( LOCAL.scopeContext.getAllSessionScopes(LOCAL.appName) )
+								Sessions:        LOCAL.sessionScopes,
+								SessionCount:    structCount(LOCAL.sessionScopes)
 							}>
 
 						</cfloop>
@@ -43,9 +46,12 @@
 
 					<cfloop collection="#LOCAL.appScopes#" item="LOCAL.appName">
 
+						<cfset LOCAL.sessionScopes = LOCAL.sessionTracker.getSessionCollection(LOCAL.appName)>
+
 						<cfset LOCAL.result[LOCAL.appName] = {
 							ApplicationName: LOCAL.appName,
-							SessionCount:    structCount( LOCAL.sessionTracker.getSessionCollection(LOCAL.appName) )
+							Sessions:        LOCAL.sessionScopes,
+							SessionCount:    structCount(LOCAL.sessionScopes)
 						}>
 
 					</cfloop>
@@ -73,6 +79,83 @@
 			<cfset LOCAL.result.MemoryPool  = createObject("java", "java.lang.management.ManagementFactory").getMemoryPoolMXBeans()>
 
 			<cfreturn LOCAL.result>
+		</cffunction>
+
+		<cffunction name="getThreadStats"      access="public" output="false" returnType="struct">
+
+			<cfargument name="filter"   type="string"  default="" hint="regular expression">
+			<cfargument name="maxDepth" type="numeric" default="100">
+
+			<cfset LOCAL.result           = {}>
+			<cfset LOCAL.result.Threads   = []>
+			<cfset LOCAL.result.Count     = 0>
+			<cfset LOCAL.result.Daemons   = 0>
+			<cfset LOCAL.result.Runnable  = 0>
+			<cfset LOCAL.result.Blocked   = 0>
+			<cfset LOCAL.result.Waiting   = 0>
+			<cfset LOCAL.result.Deadlocks = 0>
+
+			<cfset LOCAL.filterByName = (len(ARGUMENTS.filter) gt 0)>
+
+			<cfset LOCAL.threadBean = createObject("java", "java.lang.management.ManagementFactory").getThreadMXBean()>
+			<cfset LOCAL.threadIDs = LOCAL.threadBean.getAllThreadIds()>
+
+			<cfset LOCAL.result.Daemons = LOCAL.threadBean.getDaemonThreadCount()>
+
+			<cfset LOCAL.buffer = LOCAL.threadBean.findDeadlockedThreads()>
+			<cfset LOCAL.result.Deadlocks = ( isNull(LOCAL.buffer) ? 0 : arrayLen(LOCAL.buffer) )>
+
+			<cfset LOCAL.result.Count = LOCAL.threadBean.getThreadCount()>
+
+			<cfloop array="#LOCAL.threadIDs#" index="LOCAL.threadID">
+
+				<!--- without stacktrace --->
+				<cfset LOCAL.threadInfo = LOCAL.threadBean.getThreadInfo(LOCAL.threadID)>
+				<cfif isNull(LOCAL.threadInfo)>
+					<cfcontinue>
+				</cfif>
+
+				<cfswitch expression="#LOCAL.threadInfo.getThreadState()#">
+					<cfcase value="RUNNABLE">
+						<cfset LOCAL.result.Runnable++>
+					</cfcase>
+					<cfcase value="BLOCKED">
+						<cfset LOCAL.result.Blocked++>
+					</cfcase>
+					<cfcase value="WAITING TIMED_WAITING" delimiters=" ">
+						<cfset LOCAL.result.Waiting++>
+					</cfcase>
+				</cfswitch>
+
+				<cfif LOCAL.filterByName>
+
+					<cfset LOCAL.threadName = LOCAL.threadInfo.getThreadName()>
+					<cfif not reFindNoCase(ARGUMENTS.filter, LOCAL.threadName)>
+						<cfcontinue>
+					</cfif>
+
+				</cfif>
+
+				<!--- with stacktrace --->
+				<cfset LOCAL.threadInfo = LOCAL.threadBean.getThreadInfo(LOCAL.threadID, ARGUMENTS.maxDepth)>
+
+				<cfif not isNull(LOCAL.threadInfo)>
+					<cfset LOCAL.result.Threads.add(LOCAL.threadInfo)>
+				</cfif>
+
+			</cfloop>
+
+			<cfreturn LOCAL.result>
+		</cffunction>
+
+		<cffunction name="isAdobeCF"           access="public" output="false" returnType="boolean">
+
+			<cfreturn (find("ACF_", VARIABLES.adminAPI) eq 1)>
+		</cffunction>
+
+		<cffunction name="isLuceeCF"           access="public" output="false" returnType="boolean">
+
+			<cfreturn (VARIABLES.adminAPI eq "LUCEE")>
 		</cffunction>
 
 		<cffunction name="isReservedServerKey" access="public" output="false" returnType="boolean">

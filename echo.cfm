@@ -1,5 +1,5 @@
-<cfsetting enableCFoutputOnly="true">
+﻿<cfsetting enableCFoutputOnly="true">
 
-<cfset instanceID = "1">
+<cfset instanceID = "0">
 
 <cfoutput>Instance #instanceID#</cfoutput>

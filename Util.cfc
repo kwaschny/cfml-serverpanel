@@ -1,8 +1,8 @@
-<cfcomponent output="false">
+﻿<cfcomponent output="false">
 
 	<!--- BEGIN: public methods --->
 
-		<cffunction name="getBasicAuth"   access="public" output="false" returnType="struct">
+		<cffunction name="getBasicAuth"    access="public" output="false" returnType="struct">
 
 			<cfargument name="httpRequest" type="any" default="#getHttpRequestData()#">
 
@@ -127,7 +127,16 @@
 			<cfreturn LOCAL.result>
 		</cffunction>
 
-		<cffunction name="stringifyBytes" access="public" output="false" returnType="string">
+		<cffunction name="getHostNameByIP" access="public" output="false" returnType="string">
+
+			<cfargument name="address" type="string" required="true">
+
+			<cfset ARGUMENTS.address = trim(ARGUMENTS.address)>
+
+			<cfreturn ( structKeyExists(VARIABLES.HOSTS, ARGUMENTS.address) ? VARIABLES.HOSTS[ARGUMENTS.address] : ARGUMENTS.address )>
+		</cffunction>
+
+		<cffunction name="stringifyBytes"  access="public" output="false" returnType="string">
 
 			<cfargument name="bytes" type="numeric" required="true">
 
@@ -160,5 +169,13 @@
 		</cffunction>
 
 	<!--- END: public methods --->
+
+	<!--- BEGIN: private properties --->
+
+		<cfset VARIABLES.HOSTS = {
+			<!--- "192.168.0.1": "My Server" --->
+		}>
+
+	<!--- END: private properties --->
 
 </cfcomponent>

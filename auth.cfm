@@ -1,8 +1,10 @@
-<cfsetting enableCFoutputOnly="true">
+﻿<cfsetting enableCFoutputOnly="true">
 
 <cfif not isDefined("ATTRIBUTES")>
-	<cfthrow message="You must not include this file. Use <cfmodule> insead.">
+	<cfthrow message="You must not include this file. Use <cfmodule> instead.">
 </cfif>
+
+<cfset REQUEST.Util = new Util()>
 
 <!---------------------------------------------------------------------------->
 
@@ -21,7 +23,7 @@
 		<cfthrow message="You did not specify username and/or password for Basic Auth. Check auth.cfm for more details.">
 	</cfif>
 
-	<cfset basicAuth = new Util().getBasicAuth().Credentials>
+	<cfset basicAuth = REQUEST.Util.getBasicAuth().Credentials>
 
 	<cfset passedAuth = (
 		(

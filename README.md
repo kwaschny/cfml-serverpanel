@@ -1,5 +1,5 @@
 # ColdFusion/Lucee Server Panel
-A webpage that displays useful information about the server JVM and offers some administrative controls.
+A webpage that displays useful information about the server and shows a snapshot of the current live state.
 
 ![Screenshot](/screenshot.png?raw=true)
 
@@ -23,16 +23,16 @@ Just drop all files in a folder and expose it like a regular website.
 ### Set username and/or password or disable authentication
 By default, access to the Server Panel requires an authentication (via Basic Auth). If you do not specify anything, access to Server Panel will throw an exception: `You did not specify username and/or password for Basic Auth.`
 
-To set up the authentication, open `auth.cfm` and set:
+To set up the authentication, open `/auth.cfm` and set:
 ```
-<cfset requiredUsername = "your username">
-<cfset requiredPassword = "your password">
+<cfset requiredUsername = "">
+<cfset requiredPassword = "">
 ```
-Note that you can provide either username or password. Make sure `requireBasicAuth` is still set to `true`.
+Note that you can provide username/password, only username or only password. Make sure `requireBasicAuth` is still set to `true`.
 
 -----
 
-To disable the authentication permanently, open `auth.cfm` and set:
+If you do not need authentication, open `/auth.cfm` and set:
 ```
 <cfset requireBasicAuth = false>
 ```
@@ -40,10 +40,57 @@ To disable the authentication permanently, open `auth.cfm` and set:
 ### Set administration password
 Since application-, session- and server-scope information are only available through the ColdFusion/Lucee administration API, you will need to set the password for it. Otherwise it will throw an exception: `You did not specify the server admin password.`
 
-To set the administration API password, open `config.cfm` and set:
+To set the administration API password, open `/config.cfm` and set:
 ```
-<cfset CALLER[ATTRIBUTES.variable] = "your admin password">
+<!--- enter server admin password --->
+<cfset CALLER[ATTRIBUTES.variable]["cfAdminPassword"] = "">
 ```
 
-## echo.cfm
+### (optional) Set datasource for database related addons
+To set the datasource, open `/config.cfm` and set:
+```
+<!--- enter datasource to query against database --->
+<cfset CALLER[ATTRIBUTES.variable]["cfDatasource"] = "">
+```
+
+### (optional) Add/Remove and sort addons
+Addons are loaded from the `/addons/` folder. You can exclude addons by prefixing the addon's folder with an underscore `_` or add/remove (comment/uncomment) the folder's name in `/index.cfm`:
+
+```
+<cfset addOnOrder = [
+	"cf_requests",
+	"jvm_memory",
+	"iis_iptable",
+	"cf_apps",
+	"mysql_pools",
+	"mysql_queries",
+	"server",
+	"mysql_monitor",
+	"cf_scopes"
+]>
+```
+
+This also allows you to change the order of appearance.
+
+### (optional) Add custom hostnames to resolve owned/known servers
+IP addresses and hostnames can be mapped when being displayed in addons. Just edit the map at the bottom of `/Util.cfc`:
+
+```
+<cfset VARIABLES.HOSTS = {
+	"192.168.0.1": "My Server"
+}>
+```
+
+This will change occurrences of `192.168.0.1` into `My Server`.
+
+## /echo.cfm
 This file exists for monitoring reasons only. Feel free to delete the file if you don't need it.
+
+## Troubleshooting
+
+### InaccessibleObjectException
+If you encounter `java.lang.reflect.InaccessibleObjectException: Unable to make public com.sun.management.internal.HotSpotThreadImpl(sun.management.VMManagement) accessible: module jdk.management does not "exports com.sun.management.internal" to unnamed module` with Adobe ColdFusion, you need to expose the required package by adding the following argument to `/cfusion/bin/jvm.config`:
+```
+--add-opens=jdk.management/com.sun.management.internal=ALL-UNNAMED
+```
+A server restart is required after modifying the `jvm.config`.
