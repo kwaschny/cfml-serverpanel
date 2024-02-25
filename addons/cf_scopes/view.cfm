@@ -1,6 +1,12 @@
 ﻿<cfsetting enableCFoutputOnly="true">
 
+<!--- filter keys in SERVER scope --->
 <cfset sorted = structKeyArray(SERVER)>
+<cfloop from="#arrayLen(sorted)#" to="1" index="i" step="-1">
+	<cfif ATTRIBUTES.admin.isReservedServerKey(sorted[i])>
+		<cfset arrayDeleteAt(sorted, i)>
+	</cfif>
+</cfloop>
 <cfset arraySort(sorted, "TEXTnoCASE")>
 
 <!--- HTML --->
@@ -9,7 +15,7 @@
 	<div class="cf_scopes">
 
 		<h2>
-			SERVER Scope <small class="lowlight">#structCount(SERVER)#</small>
+			SERVER Scope <small class="lowlight">#arrayLen(sorted)#</small>
 		</h2>
 
 		<table class="full">
@@ -22,10 +28,6 @@
 			<tbody>
 				<cfset LOCAL.i = 0>
 				<cfloop array="#sorted#" index="key">
-
-					<cfif ATTRIBUTES.admin.isReservedServerKey(key)>
-						<cfcontinue>
-					</cfif>
 					<cfset LOCAL.i += 1>
 
 					<cfset value = SERVER[key]>
