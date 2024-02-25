@@ -33,7 +33,7 @@
 		<cfcase value="starts">
 
 			<cfloop array="#appNames#" index="appName">
-				<cfif appName.startsWith(FORM["app_pattern"])>
+				<cfif findNoCase(FORM["app_pattern"], appName) eq 1>
 					<cfset appsToStop.add(appName)>
 				</cfif>
 			</cfloop>
@@ -42,7 +42,7 @@
 		<cfcase value="ends">
 
 			<cfloop array="#appNames#" index="appName">
-				<cfif appName.endsWith(FORM["app_pattern"])>
+				<cfif findNoCase(FORM["app_pattern"], right(appName, len(FORM["app_pattern"]))) eq 1>
 					<cfset appsToStop.add(appName)>
 				</cfif>
 			</cfloop>

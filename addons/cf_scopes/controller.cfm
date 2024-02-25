@@ -15,7 +15,10 @@
 		<cfcase value="equal">
 
 			<cfloop array="#serverKeys#" index="serverKey">
-				<cfif (serverKey eq FORM["key_pattern"]) and (not ATTRIBUTES.admin.isReservedServerKey(serverKey))>
+				<cfif (
+					(serverKey eq FORM["key_pattern"]) and
+					(not ATTRIBUTES.admin.isReservedServerKey(serverKey))
+				)>
 					<cfset keysToRemove.add(serverKey)>
 				</cfif>
 			</cfloop>
@@ -24,7 +27,10 @@
 		<cfcase value="contains">
 
 			<cfloop array="#serverKeys#" index="serverKey">
-				<cfif (serverKey contains FORM["key_pattern"]) and (not ATTRIBUTES.admin.isReservedServerKey(serverKey))>
+				<cfif (
+					(serverKey contains FORM["key_pattern"]) and
+					(not ATTRIBUTES.admin.isReservedServerKey(serverKey))
+				)>
 					<cfset keysToRemove.add(serverKey)>
 				</cfif>
 			</cfloop>
@@ -33,7 +39,10 @@
 		<cfcase value="starts">
 
 			<cfloop array="#serverKeys#" index="serverKey">
-				<cfif (serverKey.startsWith(FORM["key_pattern"])) and (not ATTRIBUTES.admin.isReservedServerKey(serverKey))>
+				<cfif (
+					(findNoCase(FORM["key_pattern"], serverKey) eq 1) and
+					(not ATTRIBUTES.admin.isReservedServerKey(serverKey))
+				)>
 					<cfset keysToRemove.add(serverKey)>
 				</cfif>
 			</cfloop>
@@ -42,7 +51,10 @@
 		<cfcase value="ends">
 
 			<cfloop array="#serverKeys#" index="serverKey">
-				<cfif (serverKey.endsWith(FORM["key_pattern"])) and (not ATTRIBUTES.admin.isReservedServerKey(serverKey))>
+				<cfif (
+					(findNoCase(FORM["key_pattern"], right(serverKey, len(FORM["key_pattern"]))) eq 1) and
+					(not ATTRIBUTES.admin.isReservedServerKey(serverKey))
+				)>
 					<cfset keysToRemove.add(serverKey)>
 				</cfif>
 			</cfloop>
