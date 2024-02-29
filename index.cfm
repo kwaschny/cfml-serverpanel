@@ -12,6 +12,8 @@
 <cfset Who    = new Who(SERVER)>
 <cfset addOns = directoryList(expandPath("addons"), false, "NAME")>
 
+<cfset isWindows = (Who.getOpSystemVendor() contains "Windows")>
+
 <!--- BEGIN: controller --->
 
 	<cfif not structIsEmpty(FORM)>
@@ -40,6 +42,7 @@
 <!--- prefix the folder to disable an add-on --->
 <cfset addOnOrder = [
 	"cf_requests",
+	[ "os", ( isWindows ? "lazy" : "eager" ) ],
 	"jvm_memory",
 	<!--- "iis_iptable", --->
 	"cf_apps",
@@ -52,6 +55,8 @@
 <cfif arrayIsEmpty(addOnOrder)>
 	<cfset addOnOrder = addOns>
 </cfif>
+
+<cfset lazyAddOns = []>
 
 <!--- HTML --->
 <cfoutput>
@@ -66,9 +71,19 @@
 	<section class="panels">
 		<cfloop array="#addOnOrder#" index="addOn">
 
+			<cfset isLazy = false>
+			<cfif isArray(addOn)>
+				<cfset isLazy = arrayFindNoCase(addOn, "lazy")>
+				<cfset addOn  = addOn[1]>
+			</cfif>
+
 			<!--- ignore files with leading underscore --->
 			<cfif find("_", addOn) eq 1>
 				<cfcontinue>
+			</cfif>
+
+			<cfif isLazy>
+				<cfset lazyAddOns.add(addOn)>
 			</cfif>
 
 			<div class="panel">
@@ -107,5 +122,20 @@
 	</section>
 
 	<script src="scripts.js"></script>
+	<script>
+
+		// request lazy modules
+		window.addEventListener('DOMContentLoaded', () => {
+			<cfloop array="#lazyAddOns#" index="addOn">
+
+				const button = document.querySelector('button[data-refresh="#addOn#"]');
+				if (button !== null) {
+					button.dispatchEvent( new MouseEvent('click') );
+				}
+
+			</cfloop>
+		});
+
+	</script>
 
 </cfoutput>

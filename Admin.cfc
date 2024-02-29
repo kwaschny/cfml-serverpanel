@@ -67,6 +67,73 @@
 			<cfreturn LOCAL.result>
 		</cffunction>
 
+		<cffunction name="getCpuStats"         access="public" output="false" returnType="struct">
+
+			<cfset LOCAL.result = {}>
+
+			<cfset LOCAL.OS = createObject("java", "java.lang.management.ManagementFactory").getOperatingSystemMXBean()>
+
+			<cfset LOCAL.result.Cores       = LOCAL.OS.getAvailableProcessors()>
+			<cfset LOCAL.result.Utilization = decimalFormat( LOCAL.OS.getSystemLoadAverage() )>
+			<cfset LOCAL.result.UtilType    = ( (LOCAL.result.Utilization gte 0.00) ? "L" : "" )>
+
+			<cfif LOCAL.result.Utilization lt 0>
+				<cftry>
+
+					<cfexecute
+
+						name="PowerShell"
+						arguments="(Get-WmiObject Win32_Processor).LoadPercentage"
+
+						timeout="2"
+
+						variable="LOCAL.out"
+					>
+					</cfexecute>
+
+					<cfset LOCAL.result.Utilization = trim(LOCAL.out)>
+					<cfset LOCAL.result.UtilType    = "%">
+
+					<cfcatch>
+					</cfcatch>
+				</cftry>
+			</cfif>
+
+			<cfreturn LOCAL.result>
+		</cffunction>
+
+		<cffunction name="getDiskStats"        access="public" output="false" returnType="array">
+
+			<cfset LOCAL.result   = []>
+			<cfset LOCAL.sumFree  = 0>
+			<cfset LOCAL.sumTotal = 0>
+
+			<cfset LOCAL.disks = createObject("java", "java.io.File").listRoots()>
+			<cfloop array="#LOCAL.disks#" index="LOCAL.disk">
+
+				<cfset LOCAL.usable = disk.getUsableSpace()>
+				<cfset LOCAL.total  = disk.getTotalSpace()>
+
+				<cfset LOCAL.result.add({
+					Name:  disk.toString(),
+					Free:  LOCAL.usable,
+					Total: LOCAL.total
+				})>
+
+				<cfset LOCAL.sumFree  += LOCAL.usable>
+				<cfset LOCAL.sumTotal += LOCAL.total>
+
+			</cfloop>
+
+			<cfset LOCAL.result.add(javaCast("int", 0), {
+				Name:  "",
+				Free:  LOCAL.sumFree,
+				Total: LOCAL.sumTotal
+			})>
+
+			<cfreturn LOCAL.result>
+		</cffunction>
+
 		<cffunction name="getMemoryStats"      access="public" output="false" returnType="struct">
 
 			<cfset LOCAL.result = {}>
