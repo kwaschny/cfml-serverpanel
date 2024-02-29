@@ -1,7 +1,7 @@
 ﻿<cfsetting enableCFoutputOnly="true">
 
 <cfif not isDefined("ATTRIBUTES")>
-	<cfthrow message="You must not include this file. Use <cfmodule> insead.">
+	<cfthrow message="You must not include this file. Use <cfmodule> instead.">
 </cfif>
 
 <cfparam name="ATTRIBUTES.variable" type="string" default="CONFIG">
