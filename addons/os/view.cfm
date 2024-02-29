@@ -70,7 +70,7 @@
 		<!--- BEGIN: disks --->
 
 			<h2>
-				Disks <small class="lowlight">#REQUEST.Util.stringifyBytes(disks[1].Free)# / #REQUEST.Util.stringifyBytes(disks[1].Total)#</small>
+				Disks <small class="lowlight">#REQUEST.Util.stringifyBytes(disks[1].Total - disks[1].Free)# / #REQUEST.Util.stringifyBytes(disks[1].Total)#</small>
 			</h2>
 
 			<cfloop from="2" to="#arrayLen(disks)#" index="i">
