@@ -60,13 +60,14 @@ Addons are loaded from the `/addons/` folder. You can exclude addons by prefixin
 <cfset addOnOrder = [
 	"cf_requests",
 	"jvm_memory",
-	"iis_iptable",
+	"os",
 	"cf_apps",
+	"iis_iptable",
 	"mysql_pools",
 	"mysql_queries",
+	"cf_scopes",
 	"server",
-	"mysql_monitor",
-	"cf_scopes"
+	"mysql_monitor"
 ]>
 ```
 

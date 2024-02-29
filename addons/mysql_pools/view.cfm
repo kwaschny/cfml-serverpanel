@@ -1,37 +1,37 @@
 ﻿<cfsetting enableCFoutputOnly="true">
 
+<cfset lookup = queryNew("")>
+
 <!--- config --->
 <cfmodule template="../../config.cfm">
-<cfif not len(CONFIG.cfDatasource)>
-	<cfexit>
+<cfif len(CONFIG.cfDatasource)>
+	<cftry>
+
+		<cfquery name="lookup" datasource="#CONFIG.cfDatasource#">
+
+			SELECT
+				`DB`,
+				COUNT(1) AS `connections`
+
+			FROM
+				`information_schema`.`processlist`
+
+			WHERE
+				`DB` IS NOT NULL
+
+			GROUP BY
+				`DB`
+
+			ORDER BY
+				`connections` DESC
+
+		</cfquery>
+
+		<cfcatch>
+			<cfset lookup = queryNew("")>
+		</cfcatch>
+	</cftry>
 </cfif>
-
-<cftry>
-
-	<cfquery name="lookup" datasource="#CONFIG.cfDatasource#">
-
-		SELECT
-			`DB`,
-			COUNT(1) AS `connections`
-
-		FROM
-			`information_schema`.`processlist`
-
-		WHERE
-			`DB` IS NOT NULL
-
-		GROUP BY
-			`DB`
-
-		ORDER BY
-			`connections` DESC
-
-	</cfquery>
-
-	<cfcatch>
-		<cfset lookup = queryNew("")>
-	</cfcatch>
-</cftry>
 
 <cfset totalConnections = 0>
 <cfloop query="lookup">

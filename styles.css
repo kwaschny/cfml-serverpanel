@@ -115,8 +115,12 @@ th {
 }
 
 	.panels > .panel {
-		min-width: 320px;
+		min-width: 400px;
+		width: calc(25% - 32px);
 	}
+		.panels > .panel.single {
+			width: auto;
+		}
 
 		.panels > .panel > .controls {
 			display: flex;

@@ -1,37 +1,36 @@
 ﻿<cfsetting enableCFoutputOnly="true">
 
+<cfset lookup = queryNew("")>
+
 <!--- config --->
 <cfmodule template="../../config.cfm">
-<cfif not len(CONFIG.cfDatasource)>
-	<cfexit>
+<cfif len(CONFIG.cfDatasource)>
+	<cftry>
+
+		<cfquery name="lookup" datasource="#CONFIG.cfDatasource#">
+
+			SELECT
+				SUBSTRING_INDEX(`HOST`, ':', 1) AS `host`,
+				COUNT(1) AS `queries`
+
+			FROM
+				`information_schema`.`processlist`
+
+			WHERE
+				`COMMAND` = 'Query'
+
+			GROUP BY
+				SUBSTRING_INDEX(`HOST`, ':', 1)
+
+			ORDER BY
+				`queries` DESC
+
+		</cfquery>
+
+		<cfcatch>
+		</cfcatch>
+	</cftry>
 </cfif>
-
-<cftry>
-
-	<cfquery name="lookup" datasource="#CONFIG.cfDatasource#">
-
-		SELECT
-			SUBSTRING_INDEX(`HOST`, ':', 1) AS `host`,
-			COUNT(1) AS `queries`
-
-		FROM
-			`information_schema`.`processlist`
-
-		WHERE
-			`COMMAND` = 'Query'
-
-		GROUP BY
-			SUBSTRING_INDEX(`HOST`, ':', 1)
-
-		ORDER BY
-			`queries` DESC
-
-	</cfquery>
-
-	<cfcatch>
-		<cfset lookup = queryNew("")>
-	</cfcatch>
-</cftry>
 
 <cfset totalQueries = 0>
 <cfloop query="lookup">

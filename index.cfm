@@ -42,15 +42,15 @@
 <!--- prefix the folder to disable an add-on --->
 <cfset addOnOrder = [
 	"cf_requests",
-	[ "os", ( isWindows ? "lazy" : "eager" ) ],
 	"jvm_memory",
-	<!--- "iis_iptable", --->
+	[ "os", ( isWindows ? "lazy" : "eager" ) ],
 	"cf_apps",
-	<!--- "mysql_pools", --->
-	<!--- "mysql_queries", --->
+	"iis_iptable",
+	"mysql_pools",
+	"mysql_queries",
+	"cf_scopes",
 	"server",
-	<!--- "mysql_monitor", --->
-	"cf_scopes"
+	"mysql_monitor"
 ]>
 <cfif arrayIsEmpty(addOnOrder)>
 	<cfset addOnOrder = addOns>

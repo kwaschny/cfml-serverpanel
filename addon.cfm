@@ -50,7 +50,7 @@
 		<link rel="stylesheet" href="styles.css">
 
 		<section class="panels">
-			<div class="panel">
+			<div class="panel single">
 
 				<div class="controls">
 					<div>

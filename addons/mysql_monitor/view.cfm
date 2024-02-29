@@ -1,40 +1,40 @@
 ﻿<cfsetting enableCFoutputOnly="true">
 
+<cfset lookup = queryNew("")>
+
 <!--- config --->
 <cfmodule template="../../config.cfm">
-<cfif not len(CONFIG.cfDatasource)>
-	<cfexit>
+<cfif len(CONFIG.cfDatasource)>
+
+	<cftry>
+
+		<cfquery name="lookup" datasource="#CONFIG.cfDatasource#">
+
+			SELECT
+				`USER`,
+				SUBSTRING_INDEX(`HOST`, ':', 1) AS `host`,
+				`DB`,
+				`STATE`,
+				`TIME_MS`,
+				`MEMORY_USED`,
+				`INFO`
+
+			FROM
+				`information_schema`.`processlist`
+
+			WHERE
+					`COMMAND`  = 'Query'
+				AND `STATE`   <> 'Filling schema table'
+
+			ORDER BY
+				`TIME_MS` DESC
+
+		</cfquery>
+
+		<cfcatch>
+		</cfcatch>
+	</cftry>
 </cfif>
-
-<cftry>
-
-	<cfquery name="lookup" datasource="#CONFIG.cfDatasource#">
-
-		SELECT
-			`USER`,
-			SUBSTRING_INDEX(`HOST`, ':', 1) AS `host`,
-			`DB`,
-			`STATE`,
-			`TIME_MS`,
-			`MEMORY_USED`,
-			`INFO`
-
-		FROM
-			`information_schema`.`processlist`
-
-		WHERE
-			    `COMMAND`  = 'Query'
-			AND `STATE`   <> 'Filling schema table'
-
-		ORDER BY
-			`TIME_MS` DESC
-
-	</cfquery>
-
-	<cfcatch>
-		<cfset lookup = queryNew("")>
-	</cfcatch>
-</cftry>
 
 <!--- HTML --->
 <cfoutput>
