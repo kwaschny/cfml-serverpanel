@@ -9,6 +9,7 @@
 </cfif>
 
 <cfset Admin  = new Admin(SERVER, CONFIG.cfAdminPassword)>
+<cfset Who    = new Who(SERVER)>
 <cfset addOns = directoryList(expandPath("addons"), false, "NAME")>
 
 <!--- BEGIN: controller --->
@@ -25,7 +26,7 @@
 			<cfset addOnPath = "addons/#addOn#/controller.cfm">
 
 			<cfif fileExists( expandPath(addOnPath) )>
-				<cfmodule admin="#Admin#" template="#addOnPath#">
+				<cfmodule admin="#Admin#" who="#Who#" template="#addOnPath#">
 			</cfif>
 
 		</cfloop>
@@ -93,7 +94,7 @@
 					<cfset addOnPath = "addons/#addOn#/view.cfm">
 
 					<cfif fileExists( expandPath(addOnPath) )>
-						<cfmodule admin="#Admin#" template="#addOnPath#">
+						<cfmodule admin="#Admin#" who="#Who#" lazy="#isLazy#" template="#addOnPath#">
 					<cfelse>
 						<span class="lowlight">AddOn Not Found</span>
 					</cfif>

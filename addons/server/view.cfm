@@ -1,7 +1,5 @@
 ﻿<cfsetting enableCFoutputOnly="true">
 
-<cfset Who = new Who(SERVER)>
-
 <!--- HTML --->
 <cfoutput>
 
@@ -17,7 +15,7 @@
 					CFML Engine
 				</th>
 				<td>
-					#encodeForHtml( Who.getColdFusionVendor() )# #encodeForHtml( Who.getColdFusionVersion() )#
+					#encodeForHtml( ATTRIBUTES.who.getColdFusionVendor() )# #encodeForHtml( ATTRIBUTES.who.getColdFusionVersion() )#
 				</td>
 			</tr>
 			<tr>
@@ -25,7 +23,7 @@
 					Servlet Engine
 				</th>
 				<td>
-					#encodeForHtml( Who.getServlet() )#
+					#encodeForHtml( ATTRIBUTES.who.getServlet() )#
 				</td>
 			</tr>
 			<tr>
@@ -33,7 +31,7 @@
 					Java Runtime
 				</th>
 				<td>
-					#encodeForHtml( Who.getJavaRuntimeVendor() )# #encodeForHtml( Who.getJavaRuntimeVersion() )#
+					#encodeForHtml( ATTRIBUTES.who.getJavaRuntimeVendor() )# #encodeForHtml( ATTRIBUTES.who.getJavaRuntimeVersion() )#
 				</td>
 			</tr>
 			<tr>
@@ -41,7 +39,7 @@
 					Java VM
 				</th>
 				<td>
-					#encodeForHtml( Who.getJavaVmVendor() )# #encodeForHtml( Who.getJavaVmVersion() )#
+					#encodeForHtml( ATTRIBUTES.who.getJavaVmVendor() )# #encodeForHtml( ATTRIBUTES.who.getJavaVmVersion() )#
 				</td>
 			</tr>
 			<tr>
@@ -49,7 +47,7 @@
 					Operating System
 				</th>
 				<td>
-					#encodeForHtml( Who.getOpSystemVendor() )# #encodeForHtml( Who.getOpSystemVersion() )#
+					#encodeForHtml( ATTRIBUTES.who.getOpSystemVendor() )# #encodeForHtml( ATTRIBUTES.who.getOpSystemVersion() )#
 				</td>
 			</tr>
 			<tr>
@@ -57,7 +55,7 @@
 					System Name
 				</th>
 				<td>
-					#encodeForHtml( Who.getOpSystemName() )#
+					#encodeForHtml( ATTRIBUTES.who.getOpSystemName() )#
 				</td>
 			</tr>
 		</table>

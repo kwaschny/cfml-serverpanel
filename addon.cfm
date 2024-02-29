@@ -23,6 +23,7 @@
 </cfif>
 
 <cfset Admin = new Admin(SERVER, CONFIG.cfAdminPassword)>
+<cfset Who   = new Who(SERVER)>
 
 <!--- BEGIN: controller --->
 
@@ -31,7 +32,7 @@
 		<cfset addOnPath = "addons/#addOn#/controller.cfm">
 
 		<cfif fileExists( expandPath(addOnPath) )>
-			<cfmodule admin="#Admin#" template="#addOnPath#">
+			<cfmodule admin="#Admin#" who="#Who#" template="#addOnPath#">
 		</cfif>
 
 		<cflocation url="addon.cfm?key=#urlEncodedFormat(addOn)#" statusCode="303" addToken="false">
@@ -71,7 +72,7 @@
 	<cfset addOnPath = "addons/#addOn#/view.cfm">
 
 	<cfif fileExists( expandPath(addOnPath) )>
-		<cfmodule admin="#Admin#" template="#addOnPath#">
+		<cfmodule admin="#Admin#" who="#Who#" template="#addOnPath#">
 	<cfelse>
 		<span class="lowlight">AddOn Not Found</span>
 	</cfif>
