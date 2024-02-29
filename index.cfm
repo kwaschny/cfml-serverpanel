@@ -48,9 +48,9 @@
 	"iis_iptable",
 	"mysql_pools",
 	"mysql_queries",
+	"mysql_monitor",
 	"cf_scopes",
-	"server",
-	"mysql_monitor"
+	"server"
 ]>
 <cfif arrayIsEmpty(addOnOrder)>
 	<cfset addOnOrder = addOns>
